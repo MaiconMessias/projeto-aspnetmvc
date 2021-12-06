@@ -1,0 +1,139 @@
+@model IEnumerable<primeira_projeto_aspnetmvc.Models.Endereco>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<nav class="navbar border border-bottom-0 navbar-expand-lg navbar-light bg-light">
+    <div class="row">
+        <div class="col">
+            <h1>Lista de Endereços</h1>
+
+            <p>
+                <a asp-action="Create">Novo</a>
+            </p>
+
+            <form asp-action="Index" method="get">
+                <div>
+                    <p>
+                        Procurar por logradouro:
+                        <input type="text" name="SearchString" value="@ViewBag.CurrentFilter" />
+                        <input type="submit" value="Procurar" class="btn btn-primary" />
+                        <a asp-action="Index">Limpar Filtro</a>
+                    </p>
+                </div>
+            </form>
+        </div>        
+    </div>    
+</nav> 
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <!-- @Html.DisplayNameFor(model => model.Logradouro) -->
+                <span class="@ViewBag.iconOrderLogradouro"></span>
+                @Html.ActionLink("Logradouro", "Index", new { sortOrder = ViewBag.LograSortParm })                
+            </th>
+            <th>
+                <span class="@ViewBag.iconOrderNumero"></span>
+                @Html.ActionLink("Número", "Index", new { sortOrder = ViewBag.NumeroSortParm })                
+            </th>
+            <th>
+                <span class="@ViewBag.iconOrderCEP"></span>
+                @Html.ActionLink("CEP", "Index", new { sortOrder = ViewBag.CepSortParm })                
+            </th>
+            <th>
+                <span class="@ViewBag.iconOrderBairro"></span>
+                @Html.ActionLink("Bairro", "Index", new { sortOrder = ViewBag.BairroSortParm })                
+            </th>
+            <th>
+                <span class="@ViewBag.iconOrderCidade"></span>
+                @Html.ActionLink("Cidade", "Index", new { sortOrder = ViewBag.CidadeSortParm })                
+            </th>
+            <th>
+                <span class="@ViewBag.iconOrderEstado"></span>
+                @Html.ActionLink("Estado", "Index", new { sortOrder = ViewBag.EstadoSortParm })                
+            </th>
+            <th>Comandos</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Logradouro)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Numero)
+            </td>
+            <td id="cep">
+                @Html.DisplayFor(modelItem => item.Cep)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Bairro)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cidade)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Estado)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Deletar</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+@{
+    var prevDisabled = !ViewBag.Enderecos.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !ViewBag.Enderecos.HasNextPage ? "disabled" : "";
+    
+}
+<nav class="navbar border navbar-expand-lg navbar-light bg-light btn-nav row">
+  <ul class="pagination">    
+    <li class="page-item">
+        <a asp-action="Index"
+            asp-route-sortOrder="@ViewBag.CurrentSort"
+            asp-route-pageIndex="@(ViewBag.Enderecos.PageIndex - 1)"
+            asp-route-currentFilter="@ViewBag.CurrentFilter"
+            class="btn btn-light border @prevDisabled">
+            Anterior
+        </a>
+    </li>
+    @{
+        var totalPages = ViewBag.Enderecos.TotalPages;    
+    }
+
+    @for (int i = 1; i <= totalPages; i++)
+    {
+        var ativa = "";
+        @if (ViewBag.Enderecos.PageIndex == @i){
+           ativa = "active"; 
+        } 
+    <li class="page-item @ativa">
+        <a asp-action="Index"
+            asp-route-sortOrder="@ViewBag.CurrentSort"
+            asp-route-pageIndex="@i"
+            asp-route-currentFilter="@ViewBag.CurrentFilter"
+            class="page-link">
+             @i
+        </a>
+    </li>
+    }
+    <li class="page-item">
+        <a asp-action="Index"
+            asp-route-sortOrder="@ViewBag.CurrentSort"
+            asp-route-pageIndex="@(ViewBag.Enderecos.PageIndex + 1)"
+            asp-route-currentFilter="@ViewBag.CurrentFilter"
+            class="btn btn-light border @nextDisabled">
+            Próximo
+        </a>
+    </li>    
+  </ul>  
+</nav>
